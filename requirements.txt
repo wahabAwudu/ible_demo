@@ -1,0 +1,5 @@
+django==3.2.21
+django-environ
+django-rest-framework
+django-oauth-toolkit
+psycopg2==2.8.6

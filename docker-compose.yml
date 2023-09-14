@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:14
+    container_name: ible-db
+    restart: unless-stopped
+    volumes:
+      - ./data/postgres/data:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "5434:5434"
+    command: -p 5434
+
+  api:
+    build:
+      context: .
+    container_name: ible-api
+    restart: unless-stopped
+    command: bash -c "python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:9000"
+    ports:
+      - "9000:9000"
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+
+volumes:
+  data:
